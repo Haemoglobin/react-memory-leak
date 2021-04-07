@@ -3,7 +3,8 @@ const memoryLeak = true;
 export default function App() {
   const [someState, setSomeState] = useState(false);
   useEffect(() => {
-    setInterval(() => setSomeState(state => memoryLeak ? state : !state), 100);
+    const interval = setInterval(() => setSomeState(state => memoryLeak ? state : !state), 100);
+    return () => clearInterval(interval);
   }, []);
   return <div>Test Memory Leak</div>;
 }
