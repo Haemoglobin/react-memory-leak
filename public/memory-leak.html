@@ -14,7 +14,19 @@
         function App() {
           const [someState, setSomeState] = React.useState(false);
           React.useEffect(() => {
-             const interval = setInterval(() => setSomeState(state => state), 50);
+             const interval = setInterval(() => {
+               const a = []; 
+               for (var i = 0; i < 1000; i++) {
+                 a.push({});
+               }
+               // memory leak when setting state to previous state
+               // set state lambda is not garbage collected and retained along with all of its captured closures
+               setSomeState(state => a.length > 0 ? state : !state);
+
+               // no memory leak when setting state to something other than previous state
+               // set state lambda (and it's closures) are garbage collected as expected
+               // setSomeState(state => a.length == 0 ? state : !state);
+              }, 100);
              return () => clearInterval(interval);
           }, []);
           return <div>Test Memory Leak</div>;
